@@ -35,6 +35,11 @@ function Dealer(){
         }
     };
 
+
+    /*
+    *  Used to test hands.
+     */
+
     this.dealTestHand = function(player){
 
         this.testHand[0] = {number: 8, suit: "H"};
@@ -45,6 +50,12 @@ function Dealer(){
 
         player.testerSetHand(this.testHand);
     };
+
+
+    /*
+    * Deck Shuffler,  preious algoithm of swaping two items did not see to introduce enought randomness into
+    * the deal,  so i reverted back to this method.
+    * */
 
     this.shuffleDeck = function() {
 
@@ -59,20 +70,17 @@ function Dealer(){
                 randNum = randomSlot();
 
                 while (arr[randNum] != 0) {
-
                     randNum = randomSlot();
+
                     if (spotsFilled == 51) {
                         randNum = arr.indexOf(0);
                     }
                 }
-
                 arr[randNum] = this.deck[i];
                 spotsFilled++;
             }
-
             this.deck = arr;
         }
-
     };
 
 
@@ -84,6 +92,10 @@ function Dealer(){
         }
     };
 
+    /*
+    * This checks each hand in a big OR statement.  When it finds the first winning hand,  the rest of the OR
+    * statement is short circuited.  if none of the hands exist,  it returns false;
+    * */
 
     this.evaluateHands = function(playerA, playerB) {
 
@@ -101,6 +113,11 @@ function Dealer(){
     };
 
 
+    /*
+     * PAIR - Hand Evaluation Logic
+     * compares who has the higher position for a pair.  If the hand doesn't exist,  the variable is -1
+     * */
+
     this.checkForPair = function(playerA, playerB){
 
 
@@ -117,6 +134,10 @@ function Dealer(){
 
     };
 
+    /*
+     * TWO PAIR - Hand Evaluation Logic
+     * compares who has the higher position for a two pair.  If the hand doesn't exist,  the variable is -1
+     * */
 
     this.checkForTwoPair = function(playerA, playerB){
 
@@ -124,13 +145,19 @@ function Dealer(){
             console.log(playerA.name + ' wins with two pair ' + playerA.pair);
             this.payWinners(playerA, playerB);
             return true;
-        }else if (playerA.twoPair > playerB.twoPair){
+        }else if (playerA.twoPair < playerB.twoPair){
             console.log(playerB.name + ' wins with two pair ' + playerB.pair);
             this.payWinners(playerB, playerA);
             return true;
         }
         return false;
     };
+
+
+    /*
+     * THREE OF A KIND - Hand Evaluation Logic
+     * compares who has the higher position for 3 of a kind.  if no 4 of a kind,  the variable is -1
+     * */
 
     this.checkForThreeOfAKind = function(playerA, playerB){
 
@@ -145,6 +172,12 @@ function Dealer(){
         }
         return false;
     };
+
+
+    /*
+    * FULL HOUSE - Hand Evaluation Logic
+    * need to perform the boolean tests at the top to transform an array position into a boolean value
+    * */
 
     this.checkForFullHouse = function(playerA, playerB){
 
@@ -167,6 +200,10 @@ function Dealer(){
         return false;
     };
 
+    /*
+     * FOUR OF A KIND - Hand Evaluation Logic
+     * compares who has the higher position for a four of a kind.  if no 4 of a kind,  the variable is -1
+     * */
 
     this.checkForFourOfAKind = function(playerA, playerB){
 
@@ -180,6 +217,11 @@ function Dealer(){
         return false;
     };
 
+
+    /*
+     * STRAIGHT - Hand Evaluation Logic
+     * need to perform the boolean tests at the top to transform an array position into a boolean value
+     * */
 
     this.checkForStraights = function(playerA, playerB){
 
@@ -202,7 +244,10 @@ function Dealer(){
         return false;
     };
 
-
+    /*
+     * FLUSH - Hand Evaluation Logic
+     * need to perform the boolean tests at the top to transform an array position into a boolean value
+     * */
     this.checkForFlushes = function (playerA, playerB){
 
 
@@ -240,8 +285,6 @@ function Dealer(){
                     this.payWinners(playerB, playerA);
                     return true;
                 }else if(playerA.straight == playerB.straight){
-                    console.log('tie,  ill need to code tie breaker later\n' +
-                        'player A: Boolean: ' + aStraightFlush + ' Straight variable : ' + playerA.straight + ' flush : ' + playerA.flush );
                     return true;
                 }
             }

@@ -115,7 +115,7 @@ function Player(name, initialAmount) {
     this.hasTwoPair = function() {
 
         var firstPair = this.hasMoreThanOneNumber(PAIR);
-        return this.hasMoreThanOneNumber(PAIR, firstPair);
+       return this.hasMoreThanOneNumber(PAIR, firstPair + 1);
     };
 
     this.hasMoreThanOneNumber = function(n, index){
