@@ -11,6 +11,13 @@ function Player(name, initialAmount) {
     this.hand = [];
     this.name = name;
     this.credits = initialAmount;
+    this.straight = ZERO;
+    this.flush = ZERO;
+    this.fourOfAKind = ZERO;
+    this.threeOfAKind = ZERO;
+    this.twoPair = ZERO;
+    this.pair = ZERO;
+
 
     this.addCard = function (card) {
         this.hand.push(card);
@@ -52,12 +59,7 @@ function Player(name, initialAmount) {
 
     this.countSuitCards = function () {
 
-        var arr;
-        arr = [];
-
-        for (var j = 0; j < NUM_SUITS; j++) {
-            arr[j] = 0;
-        }
+        var arr = initializeArray(NUM_SUITS);
 
         for (var i = 0; i < NUM_CARDS_IN_HAND; i++) {
 
@@ -79,17 +81,13 @@ function Player(name, initialAmount) {
             }
         }
         return arr;
-
     };
+
+
 
     this.countNumberCards = function () {
 
-        var arr;
-        arr = [];
-
-        for (var j = 0; j < 15; j++) {
-            arr[j] = 0;
-        }
+        var arr = initializeArray(15);
 
         for (var i = 0; i < NUM_CARDS_IN_HAND; i++) {
             arr[this.hand[i].number]++;
@@ -97,44 +95,51 @@ function Player(name, initialAmount) {
         return arr;
     };
 
+
+    this.countHand = function(){
+
+        this.straight = this.hasStraight();
+        this.flush = this.hasFlush();
+        this.fourOfAKind = this.hasMoreThanOneNumber(FOUR_OF_A_KIND);
+        this.threeOfAKind = this.hasMoreThanOneNumber(THREE_OF_KIND);
+        this.twoPair = this.hasTwoPair();
+        this.pair = this.hasMoreThanOneNumber(PAIR);
+
+    };
+
+
     this.hasFlush = function () {
-        return this.countSuitCards().includes(FLUSH);
+        return this.countSuitCards().indexOf(FLUSH);
     };
 
-    this.hasMoreThanOneNumber = function(n){
-        return this.countNumberCards().indexOf(n);
+    this.hasTwoPair = function() {
+
+        var firstPair = this.hasMoreThanOneNumber(PAIR);
+        return this.hasMoreThanOneNumber(PAIR, firstPair);
     };
 
-    this.hasFourOfAKind = function () {
-        return this.countNumberCards().indexOf(FOUR_OF_A_KIND);
-    };
-
-    this.hasThreeOfAKind = function () {
-        return this.countNumberCards().indexOf(THREE_OF_KIND);
-    };
-
-    this.hasPair = function () {
-        return this.countNumberCards().indexOf(PAIR);
+    this.hasMoreThanOneNumber = function(n, index){
+        return this.countNumberCards().indexOf(n, index);
     };
 
     this.hasStraight = function () {
 
         var arr = this.countNumberCards();
-        for (var i = 0; i < 15; i++) {
+        for (var i = ZERO; i < 15; i++) {
             if (arr[i] == 1) {
-                if (arr[i + 1] == 0) {
-                    return false;
+                if (arr[i + 1] == ZERO) {
+                    return NOT_FOUND;
                 }
-                if (arr[i + 2] == 0) {
-                    return false;
+                if (arr[i + 2] == ZERO) {
+                    return NOT_FOUND;
                 }
-                if (arr[i + 3] == 0) {
-                    return false;
+                if (arr[i + 3] == ZERO) {
+                    return NOT_FOUND;
                 }
-                if (arr[i + 4] == 0) {
-                    return false;
+                if (arr[i + 4] == ZERO) {
+                    return NOT_FOUND;
                 }
-                return true;
+                return i;
             }
         }
     };

@@ -6,9 +6,12 @@
  * */
 
 function Dealer(){
+
     this.deck = [];
     this.pot = 100;
     this.testHand = [];
+
+
 
     this.createDeck = function() {
 
@@ -37,30 +40,41 @@ function Dealer(){
         this.testHand[0] = {number: 8, suit: "H"};
         this.testHand[1] = {number: 8, suit: "D"};
         this.testHand[2] = {number: 8, suit: "S"};
-        this.testHand[3] = {number: 8, suit: "C"};
+        this.testHand[3] = {number: 6, suit: "C"};
         this.testHand[4] = {number: 9, suit: "H"};
 
         player.testerSetHand(this.testHand);
-    }
-
-    this.shuffleDeck = function(){
-
-        var temp, randA, randB;
-
-        var numShuffles = float2int(getRandomArbitrary(MAX_NUM_CARDS, MAX_SHUFFLE_LENGTH));
-
-        for (var i = 0; i < numShuffles ; i++){
-            randA = randomSlot();
-            randB = randomSlot();
-
-            while(randA === randB){
-                randB = randomSlot();}
-
-            temp = this.deck[randA];
-            this.deck[randA] = this.deck[randB];
-            this.deck[randB] = temp;
-        }
     };
+
+    this.shuffleDeck = function() {
+
+
+        for (var j = 0; j < 4; j++) {
+
+            var arr = initializeArray(MAX_NUM_CARDS);
+            var spotsFilled = 0;
+
+            for (var i = 0; i < MAX_NUM_CARDS; i++) {
+
+                randNum = randomSlot();
+
+                while (arr[randNum] != 0) {
+
+                    randNum = randomSlot();
+                    if (spotsFilled == 51) {
+                        randNum = arr.indexOf(0);
+                    }
+                }
+
+                arr[randNum] = this.deck[i];
+                spotsFilled++;
+            }
+
+            this.deck = arr;
+        }
+
+    };
+
 
     this.dealNewHand = function(playerA, playerB){
 
@@ -68,85 +82,120 @@ function Dealer(){
             playerA.addCard(this.deck.shift());
             playerB.addCard(this.deck.shift());
         }
-
     };
 
-    this.displayDeck = function(){
-
-        for(var i=0; i < MAX_NUM_CARDS; i++){
-            var displayCard = '<img src="img/' + this.deck[i].number + " " + this.deck[i].suit + '.png" style="height: 75px"/>'
-            $('.purple-rain').append(displayCard);
-        }
-        $('.purple-rain').append("<br>");
-
-    };
 
     this.evaluateHands = function(playerA, playerB) {
 
-        var playerAStraight         = playerA.hasStraight();
-        var playerAFlush            = playerA.hasFlush();
-        var playerAThreeOfAKind     = playerA.hasMoreThanOneNumber(THREE_OF_KIND);
-        var playerAPair             = playerA.hasMoreThanOneNumber(PAIR);
+        playerA.countHand();
+        playerB.countHand();
 
-        var playerBStraight         = playerB.hasStraight();
-        var playerBFlush            = playerB.hasFlush();
+        if((this.checkForStraightFlush(playerA, playerB))   || (this.checkForStraights(playerA, playerB)) ||
+            (this.checkForFourOfAKind(playerA, playerB))    || (this.checkForFlushes(playerA, playerB)) ||
+            (this.checkForFullHouse(playerA, playerB))      || (this.checkForThreeOfAKind(playerA, playerB)) ||
+            (this.checkForTwoPair(playerA, playerB))        || (this.checkForPair(playerA, playerB))){
+                return true;
+            }
+        console.log('Draw,  no winner');
+        return false;
+    };
 
 
-        if((this.checkForStraightFlush(playerAStraight, playerAFlush, playerA, playerBStraight, playerBFlush, playerB)) ||
-            (this.checkForFlushes(playerAFlush, playerA, playerBFlush, playerB)) ||
-            (this.checkForStraights(playerAStraight, playerA, playerBStraight ,playerB)) ||
-            (this.checkForFourOfAKind(playerA, playerB)) ||
-            (this.checkForFullHouse())
-        ){
-            return;
+    this.checkForPair = function(playerA, playerB){
+
+
+        if(playerA.pair > playerB.pair){
+            console.log(playerA.name + ' wins with a Pair ' + playerA.pair);
+            this.payWinners(playerA, playerB);
+            return true;
+        } else if(playerA.pair < playerB.pair){
+            console.log(playerB.name + ' wins with a pair ' + playerB.pair);
+            this.payWinners(playerB, playerA);
+            return true;
         }
-
-
-        console.log('flush no get here');
+        return false;
 
     };
 
-    this.checkForFullHouse = function(playerAThreeOfAKind, playerAPair, playerA,  playerBThreeOfAKind, playerBPair, playerB){
 
+    this.checkForTwoPair = function(playerA, playerB){
+
+        if(playerA.twoPair > playerB.twoPair){
+            console.log(playerA.name + ' wins with two pair ' + playerA.pair);
+            this.payWinners(playerA, playerB);
+            return true;
+        }else if (playerA.twoPair > playerB.twoPair){
+            console.log(playerB.name + ' wins with two pair ' + playerB.pair);
+            this.payWinners(playerB, playerA);
+            return true;
+        }
+        return false;
+    };
+
+    this.checkForThreeOfAKind = function(playerA, playerB){
+
+        if(playerA.threeOfAKind > playerB.threeOfAKind){
+            console.log(playerA.name + ' wins with a 3 of a Kind ' + playerA.threeOfAKind);
+            this.payWinners(playerA, playerB);
+            return true;
+        } else if(playerA.threeOfAKind < playerB.threeOfAKind){
+            console.log(playerB.name + ' wins with a 3 of a Kind ' + playerB.threeOfAKind);
+            this.payWinners(playerB, playerA);
+            return true;
+        }
+        return false;
+    };
+
+    this.checkForFullHouse = function(playerA, playerB){
+
+        var aFullHouse = ((playerA.threeOfAKind >= ZERO) && (playerA.pair >= ZERO));
+        var bFullHouse = ((playerB.threeOfAKind >= ZERO) && (playerB.pair >= ZERO));
+
+        if((aFullHouse) || (bFullHouse)){
+            if((aFullHouse) && (bFullHouse)){
+                console.log('both are full house');
+                return true;
+            }
+
+            if((aFullHouse)){
+                this.payWinners(playerA, playerB);
+            } else {
+                this.payWinners(playerB, playerA);
+            }
+            return true;
+        }
+        return false;
     };
 
 
     this.checkForFourOfAKind = function(playerA, playerB){
 
-        var playerAFourOfAKind = playerA.hasMoreThanOneNumber(FOUR_OF_A_KIND);
-        var playerBFourOfAKind = playerB.hasMoreThanOneNumber(FOUR_OF_A_KIND);
-
-        if(playerAFourOfAKind > playerBFourOfAKind){
-            playerA.addCredits(this.pot);
-            playerB.removeCredits(this.pot);
-            console.log('hasmorethan one umber worked');
+        if(playerA.fourOfAKind > playerB.fourOfAKind){
+            this.payWinners(playerA, playerB);
             return true;
-        } else if(playerAFourOfAKind < playerBFourOfAKind){
-            playerB.addCredits(this.pot);
-            playerA.removeCredits(this.pot);
-            console.log('hasmorethan one umber worked');
+        } else if(playerA.fourOfAKind < playerB.fourOfAKind){
+            this.payWinners(playerB, playerA);
             return true;
         }
         return false;
     };
 
-    this.checkForStraights = function(playerAStraight, playerA, playerBStraight ,playerB){
 
-        if (playerAStraight || playerBStraight) {
-            if(playerAStraight && playerBStraight){
-                console.log('Draw,  both players have straights');
-                return true;
-            }
+    this.checkForStraights = function(playerA, playerB){
 
-            if(playerAStraight){
-                playerA.addCredits(this.pot);
-                playerB.removeCredits(this.pot);
-                console.log('Player A has a straight');
+        var aStraight = playerA.straight >= 0;
+        var bStraight = playerB.straight >= 0;
+
+        if (aStraight || bStraight) {
+
+            if(playerA.straight > playerB.straight){
+                this.payWinners(playerA, playerB);
                 return true;
-            }else{
-                playerB.addCredits(this.pot);
-                playerA.removeCredits(this.pot);
-                console.log('Player B has a straight');
+            }else if (playerA.straight < playerB.straight){
+                this.payWinners(playerB, playerA);
+                return true;
+            } else if (playerA.straight == playerB.straight){
+                console.log('players have equal straights');
                 return true;
             }
         }
@@ -154,46 +203,85 @@ function Dealer(){
     };
 
 
-    this.checkForFlushes = function (playerAFlush, playerA, playerBFlush ,playerB){
+    this.checkForFlushes = function (playerA, playerB){
 
-        if (playerAFlush || playerBFlush) {
-            if (playerAFlush && playerBFlush) {
+
+        var aFlush = playerA.flush >= ZERO;
+        var bFlush = playerB.flush >= ZERO;
+
+        if (aFlush || bFlush) {
+            if (aFlush && bFlush) {
                 console.log('Draw,  both players have flushes');
                 return true;
             }
 
-            if (playerAFlush) {
-                playerA.addCredits(this.pot);
-                playerB.removeCredits(this.pot);
-                return true;
+            if (aFlush) {
+                this.payWinners(playerA, playerB);
             } else {
-                playerB.addCredits(this.pot);
-                playerA.removeCredits(this.pot);
-                return true;
+                this.payWinners(playerB, playerA);
             }
+            return true;
         }
         return false;
     };
 
-    this.checkForStraightFlush = function(playerAStraight, playerAFlush, playerA, playerBStraight, playerBFlush, playerB){
 
-        if((playerAFlush && playerAStraight) || (playerBFlush && playerBStraight)){
-            if((playerAFlush && playerAStraight) && (playerBFlush && playerBStraight)){
-                console.log('tie,  ill need to code tie breaker later');
-                return true;
+    this.checkForStraightFlush = function(playerA, playerB){
+
+        var aStraightFlush   = (playerA.straight >= ZERO) && (playerA.flush >= ZERO);
+        var bStraightFlush   = (playerB.straight >= ZERO) && (playerB.flush >= ZERO);
+
+        if( aStraightFlush || bStraightFlush){
+            if(aStraightFlush && bStraightFlush){
+                if(playerA.straight > playerB.straight){
+                    this.payWinners(playerA, playerB);
+                    return true;
+                } else if (playerA.straight < playerB.straight){
+                    this.payWinners(playerB, playerA);
+                    return true;
+                }else if(playerA.straight == playerB.straight){
+                    console.log('tie,  ill need to code tie breaker later\n' +
+                        'player A: Boolean: ' + aStraightFlush + ' Straight variable : ' + playerA.straight + ' flush : ' + playerA.flush );
+                    return true;
+                }
             }
 
-            if(playerAFlush && playerAStraight){
-                playerA.addCredits(this.pot);
-                playerB.removeCredits(this.pot);
-                console.log('Player A has a straight Flush');
-                return true;
+            if(aStraightFlush){
+                this.payWinners(playerA, playerB);
             } else {
-                playerB.addCredits(this.pot);
-                playerA.removeCredits(this.pot);
-                return true;
+                this.payWinners(playerB, playerA);
             }
+            return true;
         }
         return false;
     };
+
+
+    this.payWinners = function(winner, looser){
+        winner.addCredits(this.pot);
+        looser.removeCredits(this.pot);
+    };
+
+
 }
+
+
+
+/*  This shuffler is not fandom
+ var temp, randA, randB;
+
+ var numShuffles = float2int(getRandomArbitrary(MAX_NUM_CARDS, MAX_SHUFFLE_LENGTH));
+
+ for (var i = 0; i < numShuffles ; i++){
+ randA = randomSlot();
+ randB = randomSlot();
+
+ while(randA === randB){
+ randB = randomSlot();}
+
+ temp = this.deck[randA];
+ this.deck[randA] = this.deck[randB];
+ this.deck[randB] = temp;
+ }
+
+ */

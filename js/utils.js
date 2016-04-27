@@ -17,11 +17,22 @@ function getRandomArbitrary(min, max) {
     return Math.random() * (max - min) + min;
 }
 
-
 /*
  * takes a float and returns an integer
  * */
 
 function float2int(value) {
     return value | 0;
+}
+
+function initializeArray(n){
+
+    var arr;
+    arr = [];
+
+    for (var j = ZERO; j < n; j++) {
+        arr[j] = ZERO;
+    }
+
+    return arr;
 }

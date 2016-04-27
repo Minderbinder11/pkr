@@ -2,6 +2,7 @@
  * Created by Phil on 4/25/16.
  */
 
+const NOT_FOUND             = -1;
 const ZERO                  = 0;
 const DIAMONDS              = 0;
 const HEARTS                = 1;

@@ -16,7 +16,7 @@ $(document).ready(function () {
 
         dealer.dealNewHand(playerA, playerB);
 
-        dealer.dealTestHand(playerA);
+       // dealer.dealTestHand(playerA);
 
 
         //playerA.testerSetHand();
