@@ -40,14 +40,19 @@ function Player(name, initialAmount) {
     };
 
     this.displayHand = function () {
+
+        var formattedCard;
+
         $('.purple-rain').append(this.name + "'s hand is <br>");
 
+
         for (var i = 0; i < NUM_CARDS_IN_HAND; i++) {
-            var displayCard = '<img src="img/' + this.hand[i].number + " " + this.hand[i].suit + '.png" style="height: 75px"/>'
-            $('.purple-rain').append(displayCard);
+            formattedCard = '<li class="card"><img src="img/' + this.hand[i].number + " " + this.hand[i].suit + '.png"/></li>';
+            console.log(formattedCard);
+            $('.purple-rain').find('.player').append(formattedCard);
         }
 
-        $(".wrapper-div img").click(this.highlight)
+     //   $(".wrapper-div img").click(this.highlight);
 
         $('.purple-rain').append("<br>");
     };

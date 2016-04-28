@@ -1,0 +1,36 @@
+
+
+.header {
+    height: 800px;
+    text-align: center;
+   /* background: url("../img/Yayoi-Kusama-INFINITY-DOTS-2014.jpg") no-repeat center center fixed; */
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.dealer {
+    position: relative;
+    margin: 45px;
+
+}
+
+li {
+    display: inline;
+    padding: 5px;
+
+}
+
+img {
+
+    height: 100px;
+    transition-timing-function: ease-in;
+
+}
+
+.purple-rain {
+
+    display: inline-block;
+
+}
