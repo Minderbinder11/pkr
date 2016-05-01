@@ -14,20 +14,20 @@ $(document).ready(function () {
         var playerA = new Player("Morty", 500);
         var playerB = new Player("Rick", 400);
 
-        dealer.dealNewHand(playerA, playerB);
+        dealer.addPlayer(playerA);
+        dealer.addPlayer(playerB);
 
+        dealer.dealNewHand();
+
+        dealer.displayCards();
        // dealer.dealTestHand(playerA);
-
-
-        //playerA.testerSetHand();
-
-
-        playerA.displayHand();
-        playerB.displayHand();
+       // playerA.displayHand();
+       // playerB.displayHand();
 
         dealer.evaluateHands(playerA, playerB);
 
     }
+
 
 
     startUp();

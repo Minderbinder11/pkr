@@ -76,6 +76,8 @@ function logClicks(x,y) {
 }
 
 $(document).click(function(loc) {
+
+    console.log(this);
     logClicks(loc.pageX, loc.pageY);
 });
 

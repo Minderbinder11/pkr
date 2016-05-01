@@ -23,39 +23,14 @@ function Player(name, initialAmount) {
         this.hand.push(card);
     };
 
-    this.getCard = function (cardNum) {
-        return this.hand[cardNum];
-    };
-
-    this.addCredits = function (numCredits){
-
-        this.credits += numCredits;
-        console.log("Winner!!! " + this.name + " has: " + this.credits + " credits");
-    };
-
-    this.removeCredits = function (numCredits){
-
-        this.credits -= numCredits;
-        console.log("Looser!!! " + this.name + " has: " + this.credits + " credits");
-    };
-
-    this.displayHand = function () {
+    this.getCard = function (n) {
 
         var formattedCard;
 
-        $('.purple-rain').append(this.name + "'s hand is <br>");
-
-
-        for (var i = 0; i < NUM_CARDS_IN_HAND; i++) {
-            formattedCard = '<li class="card"><img src="img/' + this.hand[i].number + " " + this.hand[i].suit + '.png"/></li>';
-            console.log(formattedCard);
-            $('.purple-rain').find('.player').append(formattedCard);
-        }
-
-     //   $(".wrapper-div img").click(this.highlight);
-
-        $('.purple-rain').append("<br>");
+        formattedCard = '<li class="card" data-card-position="' + n + '"><img src="img/' + this.hand[n].number + " " + this.hand[n].suit + '.png"/></li>';
+        return formattedCard;
     };
+
 
     this.highlight = function () {
         // chage the css on the wrapper div or image to change positon and maybe opacity
@@ -130,7 +105,10 @@ function Player(name, initialAmount) {
     this.hasStraight = function () {
 
         var arr = this.countNumberCards();
-        for (var i = ZERO; i < 15; i++) {
+
+        // only need to run the for loop to 11 (Jack, because cant have straight past 11)
+        for (var i = ZERO; i < 11; i++) {
+
             if (arr[i] == 1) {
                 if (arr[i + 1] == ZERO) {
                     return NOT_FOUND;
@@ -152,5 +130,18 @@ function Player(name, initialAmount) {
     this.testerSetHand = function(cards){
         this.hand = cards;
 
+    };
+
+
+    this.addCredits = function (numCredits){
+
+        this.credits += numCredits;
+        console.log("Winner!!! " + this.name + " has: " + this.credits + " credits");
+    };
+
+    this.removeCredits = function (numCredits){
+
+        this.credits -= numCredits;
+        console.log("Looser!!! " + this.name + " has: " + this.credits + " credits");
     };
 }
