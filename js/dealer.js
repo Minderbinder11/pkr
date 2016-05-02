@@ -12,11 +12,9 @@ function Dealer(){
     this.testHand = [];
     this.players = [];
 
-
     // create a DOM element with the class name including the name of the player
     // insert it into the DOM
     // insert ul and li's of cards into the DOM
-
 
     this.displayCards = function(){
 
@@ -46,11 +44,13 @@ function Dealer(){
 
     });
 
+
     $(document).on('mouseleave','.card', function(){
 
         $(this).removeClass('highlight');
 
     });
+
 
     this.addPlayer = function(player){
         this.players.push(player);
@@ -165,10 +165,14 @@ function Dealer(){
         }
 
 
-        if((this.checkForStraightFlush())   || (this.checkForStraights()) ||
-            (this.checkForFourOfAKind())    || (this.checkForFlushes()) ||
-            (this.checkForFullHouse())      || (this.checkForThreeOfAKind()) ||
-            (this.checkForTwoPair())        || (this.checkForPair())){
+        if((this.checkForStraightFlush())                                                       ||
+            (this.checkForStraights())                                                          ||
+            (this.checkForPairs(this.players[0].fourOfAKind, this.players[1].fourOfAKind))      ||
+            (this.checkForFlushes())                                                            ||
+            (this.checkForFullHouse())                                                          ||
+            (this.checkForPairs(this.players[0].threeOfAKind, this.players[1].threeOfAKind))    ||
+            (this.checkForPairs(this.players[0].twoPair, this.players[1].twoPair))              ||
+            (this.checkForPairs(this.players[0].pair, this.players[1].pair))){
                 return true;
             }
         console.log('Draw,  no winner');
@@ -176,65 +180,19 @@ function Dealer(){
     };
 
 
-    /*
-     * PAIR - Hand Evaluation Logic
-     * compares who has the higher position for a pair.  If the hand doesn't exist,  the variable is -1
-     * */
 
-    this.checkForPair = function(){
+    this.checkForPairs = function(varA, varB){
 
-
-        if(this.players[0].pair > this.players[1].pair){
-            console.log(this.players[0].name + ' wins with a pair');
+        if(varA > varB){
             this.payWinners(this.players[0], this.players[1]);
             return true;
-        } else if(this.players[0].pair < this.players[1].pair){
-            console.log(this.players[1].name + ' wins with a pair');
-            this.payWinners(this.players[1], this.players[0]);
-            return true;
-        }
-        return false;
-
-    };
-
-    /*
-     * TWO PAIR - Hand Evaluation Logic
-     * compares who has the higher position for a two pair.  If the hand doesn't exist,  the variable is -1
-     * */
-
-    this.checkForTwoPair = function(){
-
-        if(this.players[0].twoPair > this.players[1].twoPair){
-            console.log(this.players[0].name + ' wins with two pair');
-            this.payWinners(this.players[0], this.players[1]);
-            return true;
-        }else if (this.players[0].twoPair < this.players[1].twoPair){
-            console.log(this.players[1].name + ' wins with two pair');
+        }else if (varA < varB){
             this.payWinners(this.players[1], this.players[0]);
             return true;
         }
         return false;
     };
 
-
-    /*
-     * THREE OF A KIND - Hand Evaluation Logic
-     * compares who has the higher position for 3 of a kind.  if no 4 of a kind,  the variable is -1
-     * */
-
-    this.checkForThreeOfAKind = function(){
-
-        if(this.players[0].threeOfAKind > this.players[1].threeOfAKind){
-            console.log(this.players[0].name + ' wins with a 3 of a kind');
-            this.payWinners(this.players[0], this.players[1]);
-            return true;
-        } else if(this.players[0].threeOfAKind < this.players[1].threeOfAKind){
-            console.log(this.players[1].name + ' wins with a 3 of a kind');
-            this.payWinners(this.players[1], this.players[0]);
-            return true;
-        }
-        return false;
-    };
 
 
     /*
@@ -254,31 +212,10 @@ function Dealer(){
             }
 
             if((aFullHouse)){
-                console.log(this.players[0].name + ' wins with an Uncle Jesse');
                 this.payWinners(this.players[0], this.players[1]);
             } else {
-                console.log(this.players[1].name + ' wins with an Uncle Jesse');
                 this.payWinners(this.players[1], this.players[0]);
             }
-            return true;
-        }
-        return false;
-    };
-
-    /*
-     * FOUR OF A KIND - Hand Evaluation Logic
-     * compares who has the higher position for a four of a kind.  if no 4 of a kind,  the variable is -1
-     * */
-
-    this.checkForFourOfAKind = function(){
-
-        if(this.players[0].fourOfAKind > this.players[1].fourOfAKind){
-            console.log(this.players[0].name + ' wins with 4 of a kind');
-            this.payWinners(this.players[0], this.players[1]);
-            return true;
-        } else if(this.players[0].fourOfAKind < this.players[1].fourOfAKind){
-            console.log(this.players[1].name + ' wins with 4 of a kind');
-            this.payWinners(this.players[1], this.players[0]);
             return true;
         }
         return false;
@@ -288,8 +225,6 @@ function Dealer(){
     /*
      * STRAIGHT - Hand Evaluation Logic
      * need to perform the boolean tests at the top to transform an array position into a boolean value
-     *
-     * *&*(&(*&(*&(&)(&*)(&*)(*&)(* Check logic for Straights
      * */
 
     this.checkForStraights = function(){
@@ -299,16 +234,13 @@ function Dealer(){
 
         if (aStraight || bStraight) {
 
-            if(this.players[0].straight > this.players[0].straight){
-                console.log(this.players[0].name + ' wins with a straight');
+            if(this.players[0].straight > this.players[1].straight){
                 this.payWinners(this.players[0], this.players[1]);
                 return true;
-            }else if (this.players[0].straight < this.players[0].straight){
-                console.log(this.players[1].name + ' wins with a straight');
+            }else if (this.players[0].straight < this.players[1].straight){
                 this.payWinners(this.players[1], this.players[0]);
                 return true;
-            } else if (this.players[0].straight == this.players[0].straight){
-                console.log('players have equal straights');
+            } else if (this.players[0].straight == this.players[1].straight){
                 return true;
             }
         }
@@ -327,16 +259,12 @@ function Dealer(){
 
         if (aFlush || bFlush) {
             if (aFlush && bFlush) {
-                console.log('Draw,  both players have flushes');
                 return true;
             }
 
             if (aFlush) {
-                console.log(this.players[0].name + ' has a flushes');
                 this.payWinners(this.players[0], this.players[1]);
             } else {
-                console.log(this.players[1].name + ' has a flushes');
-                console.log('Draw,  both players have flushes');
                 this.payWinners(this.players[1], this.players[0]);
             }
             return true;
@@ -345,7 +273,7 @@ function Dealer(){
     };
 
 
-    this.checkForStraightFlush = function(playerA, playerB){
+    this.checkForStraightFlush = function(){
 
         var aStraightFlush   = (this.players[0].straight >= ZERO) && (this.players[1].flush >= ZERO);
         var bStraightFlush   = (this.players[1].straight >= ZERO) && (this.players[1].flush >= ZERO);
@@ -380,7 +308,15 @@ function Dealer(){
         console.log(winner.name + ' wins!');
     };
 
+    this.saveHand = function(){
 
+        return {
+            playerAAccount: this.players[0].credits,
+            playerBAccount: this.players[1].credits,
+            aHand: this.players[0].hand,
+            bHand: this.players[1].hand
+            };
+    };
 }
 
 

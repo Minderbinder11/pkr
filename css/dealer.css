@@ -1,7 +1,10 @@
 
+.navbar-brand img{
+    height: 40px;
+
+}
 
 .header {
-    height: 800px;
     text-align: center;
    /* background: url("../img/Yayoi-Kusama-INFINITY-DOTS-2014.jpg") no-repeat center center fixed; */
     -webkit-background-size: cover;
@@ -19,18 +22,55 @@
 li {
     display: inline;
     padding: 5px;
-
 }
 
 img {
-
     height: 100px;
     transition-timing-function: ease-in;
-
 }
 
 .purple-rain {
-
     display: inline-block;
+}
 
+
+/* Supporting */
+.supporting {
+    text-align: center;
+    padding: 5px 0 5px;
+    background: #1c1c1c;
+}
+
+.supporting .col {
+    float: left;
+    width: 28%;
+    padding: 10px;
+}
+
+.supporting h1,
+.supporting h2 {
+    color: #ffa800;
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.clearfix {
+    clear: both;
+}
+
+.supporting p {
+    color: #efefef;
+    margin-bottom: 20px;
+    line-height: 20px;
+    font-size: 12px;
+}
+
+.supporting .btn,
+.footer .btn {
+    background-color: #eee;
+    color: #1c1c1c;
+    font-size: 18px;
+    padding: 8px 30px;
+    text-decoration: none;
+    display: inline-block;
 }

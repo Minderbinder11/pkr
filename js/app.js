@@ -5,11 +5,13 @@
 $(document).ready(function () {
 
 
-    function startUp() {
-        var dealer = new Dealer();
 
-        dealer.createDeck();
-        dealer.shuffleDeck();
+
+    function startUp() {
+
+        var myDataRef = new Firebase('https://pkrapp.firebaseio.com');
+
+        var dealer = new Dealer();
 
         var playerA = new Player("Morty", 500);
         var playerB = new Player("Rick", 400);
@@ -17,18 +19,29 @@ $(document).ready(function () {
         dealer.addPlayer(playerA);
         dealer.addPlayer(playerB);
 
-        dealer.dealNewHand();
 
-        dealer.displayCards();
-       // dealer.dealTestHand(playerA);
-       // playerA.displayHand();
-       // playerB.displayHand();
+        $('.supporting').on('click', '.btn', function () {
 
-        dealer.evaluateHands(playerA, playerB);
+            playerA.cleanHand();
+            playerB.cleanHand();
+
+            var playerACards = $('#' + playerA.name);
+            var playerBCards = $('#' + playerB.name);
+
+            playerACards.each(function(){$(this).remove();});
+            playerBCards.each(function(){$(this).remove();});
+
+            dealer.createDeck();
+            dealer.shuffleDeck();
+            dealer.dealNewHand();
+            dealer.displayCards();
+            dealer.evaluateHands();
+
+            myDataRef.push(dealer.saveHand());
+
+        });
 
     }
-
-
 
     startUp();
 
