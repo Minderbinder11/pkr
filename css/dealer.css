@@ -14,63 +14,103 @@
 }
 
 .dealer {
-    position: relative;
-    margin: 45px;
+    position:           relative;
+    margin:             45px;
 
 }
 
 li {
-    display: inline;
-    padding: 5px;
+    display:            inline;
+    padding:            5px;
 }
 
 img {
-    height: 100px;
+    height:             100px;
     transition-timing-function: ease-in;
 }
 
 .purple-rain {
-    display: inline-block;
+    display:            inline-block;
 }
 
 
 /* Supporting */
 .supporting {
-    text-align: center;
-    padding: 5px 0 5px;
-    background: #1c1c1c;
+    text-align:         center;
+    padding:            5px 0 5px;
+    background:         #1c1c1c;
 }
 
 .supporting .col {
-    float: left;
-    width: 28%;
-    padding: 10px;
+    float:              left;
+    width:              28%;
+    padding:            10px;
 }
 
 .supporting h1,
 .supporting h2 {
-    color: #ffa800;
-    font-size: 20px;
-    margin-bottom: 10px;
+    color:              #ffa800;
+    font-size:          20px;
+    margin-bottom:      10px;
 }
 
 .clearfix {
-    clear: both;
+    clear:              both;
 }
 
 .supporting p {
-    color: #efefef;
-    margin-bottom: 20px;
-    line-height: 20px;
-    font-size: 12px;
+    color:              #efefef;
+    margin-bottom:      20px;
+    line-height:        20px;
+    font-size:          12px;
 }
 
 .supporting .btn,
 .footer .btn {
-    background-color: #eee;
-    color: #1c1c1c;
-    font-size: 18px;
-    padding: 8px 30px;
-    text-decoration: none;
-    display: inline-block;
+    background-color:   #eee;
+    color:              #1c1c1c;
+    font-size:          18px;
+    padding:            8px 30px;
+    text-decoration:    none;
+    display:            inline-block;
+}
+
+.divider {
+    border-top:         1px solid rgba(34,36,38,.15);
+    border-bottom:      1px solid rgba(255,255,255,.1);
+}
+
+.hand-history{
+    display:            inline-block;
+    padding-left:       0px;
+    padding-right:      0px;
+}
+
+.history-hand{
+    padding-left:       0px;
+}
+
+.media-left{
+    display:            inline-block;
+    height:             65px;
+}
+
+.media-right{
+    display:            inline-block;
+    height:             65px;
+
+}
+
+.media-object .rounded-corner{
+    margin-top:         5px;
+    display:            inline-block;
+    height:             40px;
+    width:              40px;
+    position:           relative;
+
+}
+
+.m-r-5{
+    position:           absolute;
+    left:               10px;
 }

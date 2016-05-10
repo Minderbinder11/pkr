@@ -20,25 +20,75 @@ $(document).ready(function () {
         dealer.addPlayer(playerB);
 
 
-        $('.supporting').on('click', '.btn', function () {
+/*
+*    =================== DEAL A HAND ======================
+* */
+        $('.supporting').on('click', '#deal', function (){
+
 
             playerA.cleanHand();
             playerB.cleanHand();
+            cleanHistory();
+            dealer.startAGame();
+            document.getElementById('deal').disabled = true;
+            document.getElementById('discard').disabled = false;
 
-            var playerACards = $('#' + playerA.name);
-            var playerBCards = $('#' + playerB.name);
+        });
 
-            playerACards.each(function(){$(this).remove();});
-            playerBCards.each(function(){$(this).remove();});
+/*
+ *    =================== SHOW HISTORY ======================
+* */
 
-            dealer.createDeck();
-            dealer.shuffleDeck();
-            dealer.dealNewHand();
-            dealer.displayCards();
+        $('.supporting').on('click', '#history', function(){
+            ;
+          dealer.displayHistory(myDataRef);
+        });
+
+/*
+ *    =================== DISCARD CARDS ======================
+* */
+        $('.supporting').on('click', '#discard', function(){
+
+            document.getElementById('discard').disabled = true;
+            dealer.discardCards();
+
+        });
+
+/*
+ *    =================== EVALUATE CARDS ======================
+* */
+        $('.supporting').on('click', '#evaluate', function() {
+
             dealer.evaluateHands();
+            var obj = dealer.saveHand();
+            myDataRef.push(obj);
 
-            myDataRef.push(dealer.saveHand());
+            document.getElementById('deal').disabled = false;
 
+        });
+
+/*
+ *    =================== CLEAR HISTORY ======================
+* */
+
+        $('.supporting').on('click', '#clear', function(){
+            myDataRef.set(null);  // erases the database
+            $('.media-list').find('li').remove();
+            $('.media-list').find('.divider').remove();
+        });
+
+
+
+        $(document).on('click','.card', function(){
+
+            $(this).toggleClass('highlight');
+
+        });
+
+        $('.beret .card').on('click', function(){
+
+           this.addClass('selected');
+            console.log('click');
         });
 
     }

@@ -16,3 +16,12 @@ const FLUSH                 = 5;
 const NUM_CARDS_IN_HAND     = 5;
 const MAX_NUM_CARDS         = 52;
 const MAX_SHUFFLE_LENGTH    = 200;
+
+const FOUR_OF_A_KIND_WIN    = "Four Of A Kind";
+const THREE_OF_KIND_WIN     = "Three Of A Kind";
+const PAIR_WIN              = "Pair";
+const TWO_PAIR_WIN          = "Two Pair";
+const FULL_HOUSE_WIN        = "Full House Win";
+const FLUSH_WIN             = "Flush";
+const STRAIGHT_WIN          = "Straight";
+const STRAIGHT_FLUSH_WIN    = "Straight Flush Win";

@@ -22,12 +22,9 @@
     <link href='css/dealer.css'                 rel='stylesheet' />
     <link href='css/player.css'                 rel='stylesheet' />
 
-    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
-
 </head>
 <body>
 
-<!--$(".pruple-rain).data("count") ==> 3-->
 <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -69,32 +66,56 @@
 <div class="container">
 
     <div class="header">
-
-
     </div>
 
     <div class="supporting">
         <p>Time to Play</p>
-        <a href="#" class="btn">Deal</a>
+        <a href="#" class="btn" id="deal">Deal</a>
+        <a href="#" class="btn" id="history">History</a>
+        <a href="#" class="btn" id="clear">Clear</a>
+        <a href="#" class="btn" id="discard">Discard</a>
+        <a href="#" class="btn" id="evaluate">Evaluate</a>
     </div>
 
+    <!-- =============================  MODEL HISTORY ======================================= -->
+    <div class="panel panel-inverse" data-sortable-id="ui-media-object-4" style="width: 500px">
+        <div class="panel-heading">
+            <div class="panel-heading-btn">
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand"><i
+                        class="fa fa-expand"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i
+                        class="fa fa-repeat"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i
+                        class="fa fa-minus"></i></a>
+                <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-danger" data-click="panel-remove"><i
+                        class="fa fa-times"></i></a>
+            </div>
+            <h4 class="panel-title">Media List with Button</h4>
+        </div>
+        <div class="panel-body">
+            <ul class="media-list">
+            </ul>
+        </div>
+    </div>
 </div>
+
 
 </body>
 
 <!-- ============ 3RD PARTY JAVASCRIPT =============== -->
 
    <!-- <script src="assets/plugins/jquery/jquery-1.9.1.min.js"></script> -->
+    <script src="js/jQuery.js">                         </script>
+    <script src="js/helper.js">                         </script>
     <script src="js/jquery-migrate-1.1.0.min.js">       </script>
     <script src="js/jquery-ui.min.js">                  </script>
     <script src="js/bootstrap.min.js">                  </script>
 
-    <script src="js/jquery.slimscroll.min.js">          </script>
+    <script src="js/jquery.slimscroll.js">              </script>
     <script src="js/jquery.cookie.js">                  </script>
 
 
-    <script src="js/jQuery.js">                         </script>
-    <script src="js/helper.js">                         </script>
+    <script src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
     <script src="js/ui-modal-notification.demo.min.js"> </script>
 
 <!-- ============ BASE JAVASCRIPT =============== -->
@@ -105,4 +126,26 @@
     <script src="js/player.js">                         </script>
     <script src="js/app.js">                            </script>
 
+
 </html>
+
+
+<!-- <div class="modal fade" tabindex="-1" role="dialog">
+   <div class="modal-dialog">
+       <div class="modal-content">
+           <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+               <h4 class="modal-title">Modal title</h4>
+           </div>
+           <div class="modal-body">
+               //  <p>One fine body&hellip;</p>
+
+
+           </div>
+           <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+               <button type="button" class="btn btn-primary">Save changes</button>
+           </div>
+       </div><!-- /.modal-content
+   </div><!-- /.modal-dialog -->
+<!-- </div><!-- /.modal -->
