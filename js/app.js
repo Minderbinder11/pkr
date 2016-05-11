@@ -14,7 +14,7 @@ $(document).ready(function () {
         var dealer = new Dealer();
 
         var playerA = new Player("Morty", 500);
-        var playerB = new Player("Rick", 400);
+        var playerB = new Player("Rick", 500);
 
         dealer.addPlayer(playerA);
         dealer.addPlayer(playerB);
@@ -40,7 +40,7 @@ $(document).ready(function () {
 * */
 
         $('.supporting').on('click', '#history', function(){
-            ;
+
           dealer.displayHistory(myDataRef);
         });
 

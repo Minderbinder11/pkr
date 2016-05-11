@@ -12,6 +12,8 @@
  * routing
  * more intuitive buttons
  *
+ * behavior of hitting evaluate too many times
+ *
  */
 
 /**================= DEALER CONSTRUCTOR ========================= **/
@@ -21,7 +23,7 @@ function Dealer() {
     this.deck    = [];
     this.pot     = 100;
     this.players = [];
-    this.winner = '';
+    this.winner  = '';
 
 
     /**================= START A GAME ========================= **/
@@ -33,13 +35,42 @@ function Dealer() {
         this.deck = shuffleDeck(this.deck);
 
         this.dealNewHand();
+        this.getInitialBets(50,50);
+
         this.displayCards();
+        this.displayScores();
+        $('#alert-panel').toggleClass('transparent');
     };
+
+    this.getInitialBets = function(betA, betB){
+
+        this.players[0].bet = betA;
+        this.players[0].credits -= this.players[0].bet;
+
+
+        this.players[1].bet = betB;
+        this.players[1].credits -= this.players[1].bet;
+
+        this.pot += this.players[0].bet + this.players[1].bet;
+    };
+
 
     /**================= ADDS A PLAYER ========================= **/
 
     this.addPlayer = function (player) {
         this.players.push(player);
+    };
+
+
+    this.displayScores = function (){
+
+        $('#score1').text(this.players[0].credits);
+        $('#score2').text(this.players[1].credits);
+
+        $('#bet1').text(this.players[0].bet);
+        $('#bet2').text(this.players[1].bet);
+
+        $('#pot1').text(this.pot);
     };
 
     /** ============= DEALS HANDS AND SORTS HAND ================= */
@@ -68,19 +99,31 @@ function Dealer() {
 
             $('.header').append(handContainer);
             $(id).prepend(playerName);
+            this.displayNewCards(this.players[i]);
 
-            for (var j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
-                var insertHere = $(id).find('ul');
-                var newCard    = this.players[i].getCard(j);
-                insertHere.append(newCard);
-            }
         }
 
         window.setTimeout(function () {
             $('.card .bottom').toggleClass('transparent');
-        }, 3000);
+        }, 1000);
 
     };
+
+
+    /** ====================  DISPLAY AFTER DISCARD ==================== */
+
+    this.displayNewCards = function (currentPlayer, n) {
+
+        var id;
+        id = '#' + currentPlayer.name;
+
+        for (var j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
+            var insertHere = $(id).find('ul');
+            var newCard    = currentPlayer.getCard(j);
+            insertHere.append(newCard);
+        }
+    };
+
 
     /** ====================  DISCARD CARDS ==================== */
 
@@ -88,38 +131,33 @@ function Dealer() {
 
         var position = [];
 
+
         $('#Rick').find('.card').filter('.highlight').each(function (index, elem) {
-            var place       = elem.dataset.cardNum;
+            var place       = { cardplace   : elem.dataset.cardNum,
+                                suit        : elem.dataset.cardSuit,
+                                number      : elem.dataset.cardValue};
             position[index] = place;
         });
 
-        console.log(position);
+        var list='';
 
         for (var i = 0; i < position.length; i++) {
             this.players[1].replaceOneCard(position[i], this.deck);
+            list += position[i].number + " "+ position[i].suit + " ";
+            var card = '<img class="discard" style="height: 40px" src="img/' + position[i].number + " " + position[i].suit + '.png"/>';
+            $('#alert-panel').parent('li').append(card);
         }
 
+        $('#alert-panel').text('Rick discards');
+        $('#alert-panel').toggleClass('transparent');
 
         this.players[1].hand = quicksort(this.players[1].hand, 0, 4);
         this.players[1].cleanAfterDiscard();
-        this.displayNewCards(1);
-    };
 
-    /** ====================  DISPLAY AFTER DISCARD ==================== */
-
-    this.displayNewCards = function (n) {
-
-        var id;
-        id = '#' + this.players[n].name;
-
-        for (var j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
-            var insertHere = $(id).find('ul');
-            var newCard    = this.players[n].getCard(j);
-            insertHere.append(newCard);
-        }
-
+        this.displayNewCards(this.players[1]);
         $('#Rick .card').find('.bottom').toggleClass('transparent');
     };
+
 
     /** ====================  DISPLAY ONE HAND OF HISTORY ==================== */
 
@@ -180,10 +218,6 @@ function Dealer() {
 
     /** ====================  GAME HAND EVALUATIONS ==================== */
 
-    /*
-     * This checks each hand in a big OR statement.  When it finds the first winning hand,  the rest of the OR
-     * statement is short circuited.  if none of the hands exist,  it returns false;
-     * */
 
     this.evaluateHands = function () {
 
@@ -194,133 +228,36 @@ function Dealer() {
 
         if ((this.checkForStraightFlush()) ||
             (this.checkForStraights()) ||
-            (this.checkForPairs(this.players[0].fourOfAKind, this.players[1].fourOfAKind)) ||
+            (this.checkNumbers(this.players[0].fourOfAKind, this.players[1].fourOfAKind, FOUR_OF_A_KIND_WIN)) ||
             (this.checkForFlushes()) ||
             (this.checkForFullHouse()) ||
-            (this.checkForThreeOfAKind(this.players[0].threeOfAKind, this.players[1].threeOfAKind)) ||
-            (this.checkForTwoPair(this.players[0].twoPair, this.players[1].twoPair)) ||
-            (this.checkForPairs(this.players[0].pair, this.players[1].pair))) {
+            (this.checkNumbers(this.players[0].threeOfAKind, this.players[1].threeOfAKind, THREE_OF_KIND_WIN)) ||
+            (this.checkNumbers(this.players[0].twoPair, this.players[1].twoPair, TWO_PAIR_WIN)) ||
+            (this.checkNumbers(this.players[0].pair, this.players[1].pair, PAIR_WIN))) {
             return true;
         }
+
+        $('#alert-panel').text("Draw");
+        $('#alert-panel').toggleClass('transparent');
+
         console.log('Draw,  no winner');
         this.winner = "";
         return false;
     };
 
-    /** ====================  EVALUATES A 3 OF A KIND ==================== */
-
-    this.checkForThreeOfAKind = function (varA, varB) {
+    this.checkNumbers = function (varA, varB, type) {
 
         if (varA > varB) {
-            this.payWinners(this.players[0], this.players[1], THREE_OF_KIND_WIN);
-
-            this.players[0].hand.map(function (each) {
-                if (each.number == varA) {
-                    each.winCard = 1;
-                }
-            });
-            $('#Rick .card').find('.bottom').toggleClass('transparent');
-            $('#Morty').find('.card').filter('[data-card-value="' + varA + '"]').addClass('winner');
-            $('#Morty').find('.card').not('.winner').find('img').css('height', '75px');
-            return true;
+            return this.winnerAccounting(this.players[0], this.players[1], type);
         } else if (varA < varB) {
-            this.payWinners(this.players[1], this.players[0], THREE_OF_KIND_WIN);
-
-            this.players[1].hand.map(function (each) {
-                if (each.number == varB) {
-                    each.winCard = 1;
-                }
-            });
-            $('#Morty .card').find('.bottom').toggleClass('transparent');
-            $('#Rick').find('.card').filter('[data-card-value="' + varB + '"]').addClass('winner');
-            $('#Rick').find('.card').not('.winner').find('img').css('height', '75px');
-            return true;
+            return this.winnerAccounting(this.players[1], this.players[0], type);
         }
+
         return false;
     };
 
-    /** ====================  EVALUATES PAIRS ==================== */
-
-    this.checkForPairs = function (varA, varB) {
-
-        if (varA > varB) {
 
 
-            return this.winnerAccounting(this.players[0], this.players[1], PAIR_WIN);
-            /*
-             this.payWinners(this.players[0], this.players[1], PAIR_WIN);
-
-
-             this.players[0].hand.map(function(each){
-             if(each.number == varA){
-             each.winCard = 1;
-             }
-             });
-
-             $('#Rick .card').find('.bottom').toggleClass('transparent');
-             $('#Morty').find('.card').filter('[data-card-value="' + varA + '"]').addClass('winner');
-             $('#Morty').find('.card').not('.winner').find('img').css('height', '75px');
-             return true;*/
-        } else if (varA < varB) {
-
-            return this.winnerAccounting(this.players[1], this.players[0], PAIR_WIN);
-            /*
-             this.payWinners(this.players[1], this.players[0], PAIR_WIN);
-
-             this.players[1].hand.map(function(each){
-             if(each.number == varB){
-             each.winCard = 1;
-             }
-             });
-             $('#Morty .card').find('.bottom').toggleClass('transparent');
-             $('#Rick').find('.card').filter('[data-card-value="' + varB + '"]').addClass('winner');
-             $('#Rick').find('.card').not('.winner').find('img').css('height', '75px');
-             return true; */
-
-        } else if (varA == varB) {
-            this.winner = "";
-
-        }
-        return false;
-    };
-
-    /** ====================  EVALUATES TWO PAIRS ==================== */
-
-    this.checkForTwoPair = function (varA, varB) {
-
-        if (varA > varB) {
-            this.payWinners(this.players[0], this.players[1], TWO_PAIR_WIN);
-
-            var secondPair = this.players[0].pair;
-            this.players[0].hand.map(function (each) {
-                if (each.number == varA || each.number == secondPair) {
-                    each.winCard = 1;
-                }
-            });
-
-            $('#Rick .card').find('.bottom').toggleClass('transparent');
-            $('#Morty').find('.card').filter('[data-card-value="' + varA + '"]').addClass('winner');
-            $('#Morty').find('.card').filter('[data-card-value="' + this.players[0].pair + '"]').addClass('winner');
-            $('#Morty').find('.card').not('.winner').find('img').css('height', '75px');
-            return true;
-        } else if (varA < varB) {
-            this.payWinners(this.players[1], this.players[0], TWO_PAIR_WIN);
-
-            var secondPair = this.players[1].pair;
-
-            this.players[1].hand.map(function (each) {
-                if (each.number == varB || each.number == secondPair) {
-                    each.winCard = 1;
-                }
-            });
-            $('#Morty .card').find('.bottom').toggleClass('transparent');
-            $('#Rick').find('.card').filter('[data-card-value="' + varB + '"]').addClass('winner');
-            $('#Rick').find('.card').filter('[data-card-value="' + this.players[1].pair + '"]').addClass('winner');
-            $('#Rick').find('.card').not('.winner').find('img').css('height', '75px');
-            return true;
-        }
-        return false;
-    };
 
 
     /** ====================  EVALUATES A FULL HOUSE ==================== */
@@ -332,6 +269,8 @@ function Dealer() {
 
         if ((aFullHouse) || (bFullHouse)) {
             if ((aFullHouse) && (bFullHouse)) {
+
+                // here i need to check who has the higher full house
                 this.winner = "";
                 return true;
             }
@@ -416,83 +355,114 @@ function Dealer() {
     };
 
 
-        /** ====================  ACCOUNTS FOR ALL THE CLEANUP AFTER A WIN ==================== */
+    /** ====================  ACCOUNTS FOR ALL THE CLEANUP AFTER A WIN ==================== */
 
-        this.winnerAccounting = function (winner, looser, type) {
+    this.winnerAccounting = function (winner, looser, type) {
 
-            var winnerName = winner.name;
-            var looserName = looser.name;
+        winner.typeOfWin = type;
+        looser.typeOfWin = "";
+        this.winner      = winner.name;
 
-            winner.typeOfWin = type;
-            looser.typeOfWin = "";
-            this.winner = winner.name;
+        this.highlightWinningCards(winner, type);
+        this.markWinnerCards(winner, type);
+        this.payWinners(winner, looser, type);
+        $('#' + looser.name + ' .card').find('.bottom').toggleClass('transparent');
+
+        return true;
+
+    };
 
 
-            $('#' + winnerName).find('.card').addClass('winner');
+    this.highlightWinningCards = function(winner, type){
 
-            winner.hand.map(function (each) {
+        if (type === PAIR_WIN) {
+            this.highlightTheCard(winner.name, winner.pair);
 
-                if (type === PAIR_WIN) {
-                    if (winner.pair == each.number) {
-                        each.winCard = 1;
-                        console.log('in pair win?');
-                    }
-                } else if (type === THREE_OF_KIND_WIN) {
-                    if (winner.threeOfAKind == each.number) {
-                        each.winCard = 1;
-                    }
-                } else if (type === TWO_PAIR_WIN) {
-                    if (winner.twoPair == each.number || winner.pair == each.number) {
-                        each.winCard = 1;
-                    }
-                } else {
+        } else if (type === THREE_OF_KIND_WIN) {
+            this.highlightTheCard(winner.name, winner.threeOfAKind);
+
+        } else if (type === TWO_PAIR_WIN) {
+            $('#' + winner.name).find('.card').filter('[data-card-value="' + winner.pair + '"]').addClass('winner');
+            $('#' + winner.name).find('.card').filter('[data-card-value="' + winner.twoPair + '"]').addClass('winner');
+            $('#' + winner.name).find('.card').not('.winner').find('img').css('height', '75px');
+
+        } else if (type === FOUR_OF_A_KIND_WIN) {
+
+            this.highlightTheCard(winner.name, winner.fourOfAKind);
+        }
+    };
+
+    this.highlightTheCard = function(winnerName, winningCards){
+
+        $('#' + winnerName).find('.card').filter('[data-card-value="' + winningCards + '"]').addClass('winner');
+        $('#' + winnerName).find('.card').not('.winner').find('img').css('height', '75px');
+    };
+
+
+    this.markWinnerCards = function(winner, type){
+
+        winner.hand.map(function (each) {
+
+            if (type === PAIR_WIN) {
+                if (winner.pair == each.number) {
                     each.winCard = 1;
                 }
-            });
+            } else if (type === THREE_OF_KIND_WIN) {
+                if (winner.threeOfAKind == each.number) {
+                    each.winCard = 1;
+                }
+            } else if (type === TWO_PAIR_WIN) {
+                if (winner.twoPair == each.number || winner.pair == each.number) {
+                    each.winCard = 1;
+                }
+            } else {
+                each.winCard = 1;
+            }
+        });
 
-            $('#' + looserName + ' .card').find('.bottom').toggleClass('transparent');
+    };
 
-            this.payWinners(winner, looser, type);
+    /** ====================  PAYS THIS WINNERS ==================== */
 
-            return true;
+    this.payWinners = function (winner, looser, type) {
 
+        winner.typeOfWin = type;
+        looser.typeOfWin = "";
+
+
+        winner.addCredits(this.pot);
+        looser.removeCredits(this.pot);
+        this.winner = winner.name;
+        this.displayScores();
+
+
+        $('#alert-panel').text(winner.name +" wins a pot of " + this.pot + " credits with a " + type);
+        $('#alert-panel').toggleClass('transparent');
+
+        this.pot = ZERO;
+    };
+
+
+    /** ====================  CREATES THE OBJECT STORED IN FIREBASE ==================== */
+
+    this.saveHand = function () {
+
+        return {
+            winner : this.winner,
+            potSize: this.pot,
+            hands  : [
+                {
+                    playerAName   : this.players[0].name,
+                    cards         : this.players[0].hand,
+                    typeOfWin     : this.players[0].typeOfWin,
+                    accountBalance: this.players[0].credits
+                }, {
+                    playerAName   : this.players[1].name,
+                    cards         : this.players[1].hand,
+                    typeOfWin     : this.players[1].typeOfWin,
+                    accountBalance: this.players[1].credits
+                }]
         };
-
-        /** ====================  PAYS THIS WINNERS ==================== */
-
-        this.payWinners = function (winner, looser, type) {
-
-            winner.typeOfWin = type;
-            looser.typeOfWin = "";
-
-
-            winner.addCredits(this.pot);
-            looser.removeCredits(this.pot);
-            this.winner = winner.name;
-        };
-
-
-        /** ====================  CREATES THE OBJECT STORED IN FIREBASE ==================== */
-
-        this.saveHand = function () {
-
-            return {
-                winner : this.winner,
-                potSize: this.pot,
-                hands  : [
-                    {
-                        playerAName   : this.players[0].name,
-                        cards         : this.players[0].hand,
-                        typeOfWin     : this.players[0].typeOfWin,
-                        accountBalance: this.players[0].credits
-                    }, {
-                        playerAName   : this.players[1].name,
-                        cards         : this.players[1].hand,
-                        typeOfWin     : this.players[1].typeOfWin,
-                        accountBalance: this.players[1].credits
-                    }]
-            };
-        };
+    };
 }
-
 

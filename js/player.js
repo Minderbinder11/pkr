@@ -11,6 +11,7 @@ function Player(name, initialAmount) {
 
     this.hand         = [];
     this.name         = name;
+    this.bet          = ZERO;
     this.credits      = initialAmount;
     this.typeOfWin    = "";
     this.straight     = ZERO;
@@ -23,7 +24,8 @@ function Player(name, initialAmount) {
     this.replaceOneCard = function (position, deck) {
 
         var newCard         = deck.shift();
-        this.hand[position] = newCard;
+        console.log(position);
+        this.hand[position.cardplace] = newCard;
 
     };
 
@@ -59,7 +61,8 @@ function Player(name, initialAmount) {
 
         var formattedCard;
 
-        formattedCard = '<li class="card" data-card-value="' + this.hand[n].number + '" data-card-num="' + n + '">' +
+        formattedCard = '<li class="card" data-card-value="' + this.hand[n].number + '" ' +
+            'data-card-num="' + n + '" data-card-suit="' + this.hand[n].suit + '">' +
             '<img class="current-hand top" src="img/' + this.hand[n].number + " " + this.hand[n].suit + '.png"/>' +
             '<img class="current-hand bottom" src="img/top-of-card.png"/></li>';
 
