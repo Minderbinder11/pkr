@@ -19,10 +19,12 @@ $(document).ready(function () {
         dealer.addPlayer(playerA);
         dealer.addPlayer(playerB);
 
+        $('#history-modal').modal('show');
 
-/*
-*    =================== DEAL A HAND ======================
-* */
+
+        /*
+        *    =================== DEAL A HAND ======================
+        * */
         $('.supporting').on('click', '#deal', function (){
 
 
