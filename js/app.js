@@ -19,7 +19,7 @@ $(document).ready(function () {
         dealer.addPlayer(playerA);
         dealer.addPlayer(playerB);
 
-        $('#history-modal').modal('show');
+
 
 
         /*
@@ -42,6 +42,8 @@ $(document).ready(function () {
 * */
 
         $('.supporting').on('click', '#history', function(){
+
+            $('#history-modal').modal('show');
 
           dealer.displayHistory(myDataRef);
         });
