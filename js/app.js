@@ -35,6 +35,8 @@ $(document).ready(function () {
             document.getElementById('deal').disabled = true;
             document.getElementById('discard').disabled = false;
 
+            $('.supporting').find("#discard").show();
+
         });
 
 /*
@@ -64,6 +66,7 @@ $(document).ready(function () {
         $('.supporting').on('click', '#evaluate', function() {
 
             dealer.evaluateHands();
+            $('.nav').find('.discard').remove();
             var obj = dealer.saveHand();
             myDataRef.push(obj);
 

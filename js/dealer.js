@@ -77,7 +77,7 @@ function Dealer() {
 
     this.dealNewHand = function () {
 
-        for (var i = ZERO; i < NUM_CARDS_IN_HAND; i++) {
+        for (let i = ZERO; i < NUM_CARDS_IN_HAND; i++) {
             this.players[0].addCard(this.deck.shift());
             this.players[1].addCard(this.deck.shift());
         }
@@ -91,11 +91,11 @@ function Dealer() {
 
     this.displayCards = function () {
 
-        for (var i = ZERO; i < this.players.length; i++) {
+        for (let i = ZERO; i < this.players.length; i++) {
 
-            var id            = '#' + this.players[i].name;
-            var handContainer = HTMLCurrentHand.replace('%name%', this.players[i].name).replace('%number%', i);
-            var playerName    = HTMLPlayerName.replace('%name%', this.players[i].name);
+            let id            = '#' + this.players[i].name;
+            let handContainer = HTMLCurrentHand.replace('%name%', this.players[i].name).replace('%number%', i);
+            let playerName    = HTMLPlayerName.replace('%name%', this.players[i].name);
 
             $('.header').append(handContainer);
             $(id).prepend(playerName);
@@ -112,14 +112,14 @@ function Dealer() {
 
     /** ====================  DISPLAY AFTER DISCARD ==================== */
 
-    this.displayNewCards = function (currentPlayer, n) {
+    this.displayNewCards = function (currentPlayer) {
 
-        var id;
+        let id;
         id = '#' + currentPlayer.name;
 
-        for (var j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
-            var insertHere = $(id).find('ul');
-            var newCard    = currentPlayer.getCard(j);
+        for (let j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
+            let insertHere = $(id).find('ul');
+            let newCard    = currentPlayer.getCard(j);
             insertHere.append(newCard);
         }
     };
@@ -129,19 +129,19 @@ function Dealer() {
 
     this.discardCards = function () {
 
-        var position = [];
-
+        let position = [];
 
         $('#Rick').find('.card').filter('.highlight').each(function (index, elem) {
-            var place       = { cardplace   : elem.dataset.cardNum,
+            let place       = { cardplace   : elem.dataset.cardNum,
                                 suit        : elem.dataset.cardSuit,
-                                number      : elem.dataset.cardValue};
+                                number      : elem.dataset.cardValue
+                                };
             position[index] = place;
         });
 
         var list='';
 
-        for (var i = 0; i < position.length; i++) {
+        for (let i = ZERO; i < position.length; i++) {
             this.players[1].replaceOneCard(position[i], this.deck);
             list += position[i].number + " "+ position[i].suit + " ";
             var card = '<img class="discard" style="height: 40px" src="img/' + position[i].number + " " + position[i].suit + '.png"/>';
@@ -163,7 +163,7 @@ function Dealer() {
 
     this.displayHistory = function (db) {
 
-        var counter = 0;
+        let counter = 0;
 
         db.on('value', function (item) {
 
@@ -199,7 +199,7 @@ function Dealer() {
 
                 $('.media-list').prepend(outPutB);
 
-                for (var j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
+                for (let j = ZERO; j < NUM_CARDS_IN_HAND; j++) {
 
                     var oneCardB = HistoryCard.replace(/%dataNum%/gi, game.val().hands[1].cards[j].number)
                         .replace('%dataSuit%', game.val().hands[1].cards[j].suit)
@@ -221,10 +221,9 @@ function Dealer() {
 
     this.evaluateHands = function () {
 
-        for (var i = ZERO; i < this.players.length; i++) {
+        for (let i = ZERO; i < this.players.length; i++) {
             this.players[i].countHand();
         }
-
 
         if ((this.checkForStraightFlush()) ||
             (this.checkForStraights()) ||
@@ -257,19 +256,15 @@ function Dealer() {
     };
 
 
-
-
-
     /** ====================  EVALUATES A FULL HOUSE ==================== */
 
     this.checkForFullHouse = function () {
 
-        var aFullHouse = ((this.players[0].threeOfAKind >= ZERO) && (this.players[0].pair >= ZERO));
-        var bFullHouse = ((this.players[0].threeOfAKind >= ZERO) && (this.players[1].pair >= ZERO));
+        let aFullHouse = ((this.players[0].threeOfAKind >= ZERO) && (this.players[0].pair >= ZERO));
+        let bFullHouse = ((this.players[0].threeOfAKind >= ZERO) && (this.players[1].pair >= ZERO));
 
         if ((aFullHouse) || (bFullHouse)) {
             if ((aFullHouse) && (bFullHouse)) {
-
                 // here i need to check who has the higher full house
                 this.winner = "";
                 return true;
@@ -289,8 +284,8 @@ function Dealer() {
 
     this.checkForStraights = function () {
 
-        var aStraight = this.players[0].straight >= ZERO;
-        var bStraight = this.players[1].straight >= ZERO;
+        let aStraight = this.players[0].straight >= ZERO;
+        let bStraight = this.players[1].straight >= ZERO;
 
         if (aStraight || bStraight) {
 
@@ -311,8 +306,8 @@ function Dealer() {
     this.checkForFlushes = function () {
 
 
-        var aFlush = this.players[0].flush >= ZERO;
-        var bFlush = this.players[1].flush >= ZERO;
+        let aFlush = this.players[0].flush >= ZERO;
+        let bFlush = this.players[1].flush >= ZERO;
 
         if (aFlush || bFlush) {
             if (aFlush && bFlush) {
@@ -332,8 +327,8 @@ function Dealer() {
 
     this.checkForStraightFlush = function () {
 
-        var aStraightFlush = (this.players[0].straight >= ZERO) && (this.players[1].flush >= ZERO);
-        var bStraightFlush = (this.players[1].straight >= ZERO) && (this.players[1].flush >= ZERO);
+        let aStraightFlush = (this.players[0].straight >= ZERO) && (this.players[1].flush >= ZERO);
+        let bStraightFlush = (this.players[1].straight >= ZERO) && (this.players[1].flush >= ZERO);
 
         if (aStraightFlush || bStraightFlush) {
             if (aStraightFlush && bStraightFlush) {
@@ -369,7 +364,6 @@ function Dealer() {
         $('#' + looser.name + ' .card').find('.bottom').toggleClass('transparent');
 
         return true;
-
     };
 
 

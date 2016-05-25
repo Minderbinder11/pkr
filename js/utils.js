@@ -34,19 +34,19 @@ var HistoryCard             = '<li class="history-card" data-card-value="%dataNu
  *  */
 function createDeck(deck){
 
-    for (var i = ZERO; i < MAX_NUM_CARDS; i++) {
+    for (let i = ZERO; i < MAX_NUM_CARDS; i++) {
         switch (i % NUM_SUITS) {
             case DIAMONDS:
-                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: "D", winCard: ""};
+                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: DIAMONDS_STRING, winCard: ""};
                 break;
             case HEARTS:
-                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: "H", winCard: ""};
+                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: HEARTS_STRING, winCard: ""};
                 break;
             case CLUBS:
-                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: "C", winCard: ""};
+                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: CLUBS_STRING, winCard: ""};
                 break;
             case SPADES:
-                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: "S", winCard: ""};
+                deck[i] = {number: (2 + float2int(i / NUM_SUITS)), suit: SPADES_STRING, winCard: ""};
                 break;
             default:
                 break;
@@ -64,21 +64,22 @@ function createDeck(deck){
 
 function shuffleDeck(deck) {
 
-    var randNum;
+    let randNum;
+    let arr = [];
 
-    for (var j = ZERO; j < 4; j++) {
+    for (let j = ZERO; j < 4; j++) {
 
-        var arr = initializeArray(MAX_NUM_CARDS);
-        var spotsFilled = ZERO;
+        arr = initializeArray(MAX_NUM_CARDS);
+        let spotsFilled = ZERO;
 
-        for (var i = ZERO; i < MAX_NUM_CARDS; i++) {
+        for (let i = ZERO; i < MAX_NUM_CARDS; i++) {
 
             randNum = randomSlot();
 
-            while (arr[randNum] != 0) {
+            while (arr[randNum] != ZERO) {
                 randNum = randomSlot();
 
-                if (spotsFilled == 51) {
+                if (spotsFilled == NEXT_TO_LAST_CARD) {
                     randNum = arr.indexOf(0);
                 }
             }
@@ -87,25 +88,18 @@ function shuffleDeck(deck) {
         }
     }
     return arr;
-
 };
 
-
-
-
-/*
-*
-* */
 
 
 function quicksort(arr, left, right){
 
 
-    var pivotNum = left + float2int((right-left) /2);
-    var pivot = arr[pivotNum].number;
+    let pivotNum = left + float2int((right-left) /2);
+    let pivot = arr[pivotNum].number;
 
-    var i = left;
-    var j = right;
+    let i = left;
+    let j = right;
 
     while (i <= j) {
 
@@ -131,7 +125,7 @@ function quicksort(arr, left, right){
 
 function exchange(arr, i, j){
 
-    var temp=arr[i];
+    let temp=arr[i];
     arr[i]=arr[j];
     arr[j]=temp;
     return arr;
@@ -165,15 +159,15 @@ function getRandomArbitrary(min, max) {
  * */
 
 function float2int(value) {
-    return value | 0;
+    return value | ZERO;
 }
 
 function initializeArray(n){
 
-    var arr;
+    let arr;
     arr = [];
 
-    for (var j = ZERO; j < n; j++) {
+    for (let j = ZERO; j < n; j++) {
         arr[j] = ZERO;
     }
 

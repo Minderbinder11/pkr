@@ -23,20 +23,18 @@ function Player(name, initialAmount) {
 
     this.replaceOneCard = function (position, deck) {
 
-        var newCard         = deck.shift();
-        console.log(position);
+        let newCard = deck.shift();
         this.hand[position.cardplace] = newCard;
 
     };
 
     this.cleanHand = function () {
 
-        for (var i = ZERO; i < NUM_CARDS_IN_HAND; i++) {
-
+        for (let i = ZERO; i < NUM_CARDS_IN_HAND; i++) {
             this.hand.shift();
         }
 
-        var playerACards = $('#' + this.name);
+        let playerACards = $('#' + this.name);
         playerACards.each(function () {
             $(this).remove();
         });
@@ -59,7 +57,7 @@ function Player(name, initialAmount) {
 
     this.getCard = function (n) {
 
-        var formattedCard;
+        let formattedCard;
 
         formattedCard = '<li class="card" data-card-value="' + this.hand[n].number + '" ' +
             'data-card-num="' + n + '" data-card-suit="' + this.hand[n].suit + '">' +
@@ -72,21 +70,21 @@ function Player(name, initialAmount) {
 
     this.countSuitCards = function () {
 
-        var arr = initializeArray(NUM_SUITS);
+        let arr = initializeArray(NUM_SUITS);
 
         for (var i = ZERO; i < NUM_CARDS_IN_HAND; i++) {
 
             switch (this.hand[i].suit) {
-                case "D":
+                case DIAMONDS_STRING:
                     arr[0]++;
                     break;
-                case "H":
+                case HEARTS_STRING:
                     arr[1]++;
                     break;
-                case "C":
+                case CLUBS_STRING:
                     arr[2]++;
                     break;
-                case "S":
+                case SPADES_STRING:
                     arr[3]++;
                     break;
                 default:
@@ -101,9 +99,9 @@ function Player(name, initialAmount) {
 
     this.countNumberCards = function () {
 
-        var arr = initializeArray(15);
+        let arr = initializeArray(15);
 
-        for (var i = 0; i < NUM_CARDS_IN_HAND; i++) {
+        for (let i = ZERO; i < NUM_CARDS_IN_HAND; i++) {
             arr[this.hand[i].number]++;
         }
         return arr;
@@ -143,10 +141,10 @@ function Player(name, initialAmount) {
 
     this.hasStraight = function () {
 
-        var arr = this.countNumberCards();
+        let arr = this.countNumberCards();
 
 
-        for (var i = ZERO; i < 11; i++) {
+        for (let i = ZERO; i < 11; i++) {
 
 
             if (arr[i] != 1) {

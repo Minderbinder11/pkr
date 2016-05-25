@@ -14,6 +14,7 @@ const PAIR                  = 2;
 const NUM_SUITS             = 4;
 const FLUSH                 = 5;
 const NUM_CARDS_IN_HAND     = 5;
+const NEXT_TO_LAST_CARD     = 51;
 const MAX_NUM_CARDS         = 52;
 const MAX_SHUFFLE_LENGTH    = 200;
 
@@ -25,3 +26,8 @@ const FULL_HOUSE_WIN        = "Full House Win";
 const FLUSH_WIN             = "Flush";
 const STRAIGHT_WIN          = "Straight";
 const STRAIGHT_FLUSH_WIN    = "Straight Flush Win";
+
+const DIAMONDS_STRING       = 'D';
+const CLUBS_STRING          = "C";
+const HEARTS_STRING         = 'H';
+const SPADES_STRING         = "S";
